@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Countries Database</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #eef2f3;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      h1 {
+        text-align: center;
+        color: #2b3a42;
+        margin-bottom: 25px;
+      }
+
+      /* Search Bar Styling */
+      .search-container {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      #searchInput {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+      }
+
+      #searchInput:focus {
+        outline: none;
+        border-color: #3498db;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+      }
+
+      thead {
+        background-color: #34495e;
+        color: white;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 14px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+        white-space: nowrap;
+      }
+
+      tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      .id-col {
+        font-weight: bold;
+        color: #7f8c8d;
+        width: 40px;
+        text-align: center;
+      }
+
+      /* Badge for Continent */
+      .continent-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+        min-width: 60px;
+        text-align: center;
+      }
+      /* Color coding for continents */
+      .asia {
+        background-color: #e74c3c;
+      }
+      .europe {
+        background-color: #3498db;
+      }
+      .africa {
+        background-color: #f1c40f;
+        color: #333;
+      }
+      .north-america {
+        background-color: #2ecc71;
+      }
+      .south-america {
+        background-color: #27ae60;
+      }
+      .oceania {
+        background-color: #9b59b6;
+      }
+      .antarctica {
+        background-color: #95a5a6;
+      }
+
+      /* Mobile Responsive */
+      @media screen and (max-width: 768px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+        thead tr {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+        }
+        tr {
+          border: 1px solid #ccc;
+          margin-bottom: 15px;
+          border-radius: 8px;
+          overflow: hidden;
+          background: #fff;
+        }
+        td {
+          border: none;
+          border-bottom: 1px solid #eee;
+          position: relative;
+          padding-left: 50%;
+          text-align: right;
+        }
+        td:before {
+          position: absolute;
+          top: 14px;
+          left: 15px;
+          width: 45%;
+          white-space: nowrap;
+          font-weight: bold;
+          text-align: left;
+          color: #34495e;
+        }
+        td:nth-of-type(1):before {
+          content: "#";
+        }
+        td:nth-of-type(2):before {
+          content: "Country";
+        }
+        td:nth-of-type(3):before {
+          content: "Capital";
+        }
+        td:nth-of-type(4):before {
+          content: "Continent";
+        }
+        td:nth-of-type(5):before {
+          content: "Population";
+        }
+        td:nth-of-type(6):before {
+          content: "Language";
+        }
+
+        .id-col {
+          width: auto;
+          text-align: right;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>World Countries Database</h1>
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          onkeyup="filterTable()"
+          placeholder="Search for country, capital, or continent..."
+        />
+      </div>
+
+      <table id="countryTable">
+        <thead>
+          <tr>
+            <th class="id-col">#</th>
+            <th>Country Name</th>
+            <th>Capital City</th>
+            <th>Continent</th>
+            <th>Population (Approx)</th>
+            <th>Primary Language</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="id-col">1</td>
+            <td>China</td>
+            <td>Beijing</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>1,425,000,000</td>
+            <td>Mandarin</td>
+          </tr>
+          <tr>
+            <td class="id-col">2</td>
+            <td>India</td>
+            <td>New Delhi</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>1,428,000,000</td>
+            <td>Hindi / English</td>
+          </tr>
+          <tr>
+            <td class="id-col">3</td>
+            <td>United States</td>
+            <td>Washington, D.C.</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>334,000,000</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td class="id-col">4</td>
+            <td>Indonesia</td>
+            <td>Jakarta</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>277,000,000</td>
+            <td>Indonesian</td>
+          </tr>
+          <tr>
+            <td class="id-col">5</td>
+            <td>Pakistan</td>
+            <td>Islamabad</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>240,000,000</td>
+            <td>Urdu / English</td>
+          </tr>
+          <tr>
+            <td class="id-col">6</td>
+            <td>Nigeria</td>
+            <td>Abuja</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>223,000,000</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td class="id-col">7</td>
+            <td>Brazil</td>
+            <td>Brasília</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>216,000,000</td>
+            <td>Portuguese</td>
+          </tr>
+          <tr>
+            <td class="id-col">8</td>
+            <td>Bangladesh</td>
+            <td>Dhaka</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>173,000,000</td>
+            <td>Bengali</td>
+          </tr>
+          <tr>
+            <td class="id-col">9</td>
+            <td>Russia</td>
+            <td>Moscow</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>144,000,000</td>
+            <td>Russian</td>
+          </tr>
+          <tr>
+            <td class="id-col">10</td>
+            <td>Mexico</td>
+            <td>Mexico City</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>128,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">11</td>
+            <td>Ethiopia</td>
+            <td>Addis Ababa</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>126,000,000</td>
+            <td>Amharic</td>
+          </tr>
+          <tr>
+            <td class="id-col">12</td>
+            <td>Japan</td>
+            <td>Tokyo</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>123,000,000</td>
+            <td>Japanese</td>
+          </tr>
+          <tr>
+            <td class="id-col">13</td>
+            <td>Philippines</td>
+            <td>Manila</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>117,000,000</td>
+            <td>Filipino / English</td>
+          </tr>
+          <tr>
+            <td class="id-col">14</td>
+            <td>Egypt</td>
+            <td>Cairo</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>112,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">15</td>
+            <td>DR Congo</td>
+            <td>Kinshasa</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>102,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">16</td>
+            <td>Vietnam</td>
+            <td>Hanoi</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>99,000,000</td>
+            <td>Vietnamese</td>
+          </tr>
+          <tr>
+            <td class="id-col">17</td>
+            <td>Iran</td>
+            <td>Tehran</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>89,000,000</td>
+            <td>Persian</td>
+          </tr>
+          <tr>
+            <td class="id-col">18</td>
+            <td>Turkey</td>
+            <td>Ankara</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>85,000,000</td>
+            <td>Turkish</td>
+          </tr>
+          <tr>
+            <td class="id-col">19</td>
+            <td>Germany</td>
+            <td>Berlin</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>84,000,000</td>
+            <td>German</td>
+          </tr>
+          <tr>
+            <td class="id-col">20</td>
+            <td>Thailand</td>
+            <td>Bangkok</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>71,000,000</td>
+            <td>Thai</td>
+          </tr>
+          <tr>
+            <td class="id-col">21</td>
+            <td>United Kingdom</td>
+            <td>London</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>67,000,000</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td class="id-col">22</td>
+            <td>Tanzania</td>
+            <td>Dodoma</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>67,000,000</td>
+            <td>Swahili / English</td>
+          </tr>
+          <tr>
+            <td class="id-col">23</td>
+            <td>France</td>
+            <td>Paris</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>68,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">24</td>
+            <td>South Africa</td>
+            <td>Pretoria</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>60,000,000</td>
+            <td>English / Zulu</td>
+          </tr>
+          <tr>
+            <td class="id-col">25</td>
+            <td>Italy</td>
+            <td>Rome</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>59,000,000</td>
+            <td>Italian</td>
+          </tr>
+          <tr>
+            <td class="id-col">26</td>
+            <td>Kenya</td>
+            <td>Nairobi</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>55,000,000</td>
+            <td>Swahili / English</td>
+          </tr>
+          <tr>
+            <td class="id-col">27</td>
+            <td>Myanmar</td>
+            <td>Naypyidaw</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>54,000,000</td>
+            <td>Burmese</td>
+          </tr>
+          <tr>
+            <td class="id-col">28</td>
+            <td>South Korea</td>
+            <td>Seoul</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>51,000,000</td>
+            <td>Korean</td>
+          </tr>
+          <tr>
+            <td class="id-col">29</td>
+            <td>Colombia</td>
+            <td>Bogotá</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>52,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">30</td>
+            <td>Spain</td>
+            <td>Madrid</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>48,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">31</td>
+            <td>Uganda</td>
+            <td>Kampala</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>48,000,000</td>
+            <td>English / Swahili</td>
+          </tr>
+          <tr>
+            <td class="id-col">32</td>
+            <td>Argentina</td>
+            <td>Buenos Aires</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>46,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">33</td>
+            <td>Algeria</td>
+            <td>Algiers</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>45,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">34</td>
+            <td>Sudan</td>
+            <td>Khartoum</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>48,000,000</td>
+            <td>Arabic / English</td>
+          </tr>
+          <tr>
+            <td class="id-col">35</td>
+            <td>Ukraine</td>
+            <td>Kyiv</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>37,000,000</td>
+            <td>Ukrainian</td>
+          </tr>
+          <tr>
+            <td class="id-col">36</td>
+            <td>Iraq</td>
+            <td>Baghdad</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>45,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">37</td>
+            <td>Afghanistan</td>
+            <td>Kabul</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>42,000,000</td>
+            <td>Pashto / Dari</td>
+          </tr>
+          <tr>
+            <td class="id-col">38</td>
+            <td>Poland</td>
+            <td>Warsaw</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>37,000,000</td>
+            <td>Polish</td>
+          </tr>
+          <tr>
+            <td class="id-col">39</td>
+            <td>Canada</td>
+            <td>Ottawa</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>39,000,000</td>
+            <td>English / French</td>
+          </tr>
+          <tr>
+            <td class="id-col">40</td>
+            <td>Morocco</td>
+            <td>Rabat</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>37,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">41</td>
+            <td>Saudi Arabia</td>
+            <td>Riyadh</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>36,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">42</td>
+            <td>Uzbekistan</td>
+            <td>Tashkent</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>36,000,000</td>
+            <td>Uzbek</td>
+          </tr>
+          <tr>
+            <td class="id-col">43</td>
+            <td>Angola</td>
+            <td>Luanda</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>36,000,000</td>
+            <td>Portuguese</td>
+          </tr>
+          <tr>
+            <td class="id-col">44</td>
+            <td>Malaysia</td>
+            <td>Kuala Lumpur</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>34,000,000</td>
+            <td>Malay</td>
+          </tr>
+          <tr>
+            <td class="id-col">45</td>
+            <td>Peru</td>
+            <td>Lima</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>34,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">46</td>
+            <td>Ghana</td>
+            <td>Accra</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>34,000,000</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td class="id-col">47</td>
+            <td>Mozambique</td>
+            <td>Maputo</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>33,000,000</td>
+            <td>Portuguese</td>
+          </tr>
+          <tr>
+            <td class="id-col">48</td>
+            <td>Yemen</td>
+            <td>Sana'a</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>34,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">49</td>
+            <td>Nepal</td>
+            <td>Kathmandu</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>31,000,000</td>
+            <td>Nepali</td>
+          </tr>
+          <tr>
+            <td class="id-col">50</td>
+            <td>Venezuela</td>
+            <td>Caracas</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>28,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">51</td>
+            <td>Madagascar</td>
+            <td>Antananarivo</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>30,000,000</td>
+            <td>Malagasy / French</td>
+          </tr>
+          <tr>
+            <td class="id-col">52</td>
+            <td>Cameroon</td>
+            <td>Yaoundé</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>28,000,000</td>
+            <td>French / English</td>
+          </tr>
+          <tr>
+            <td class="id-col">53</td>
+            <td>Ivory Coast</td>
+            <td>Yamoussoukro</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>28,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">54</td>
+            <td>Australia</td>
+            <td>Canberra</td>
+            <td><span class="continent-badge oceania">Oceania</span></td>
+            <td>26,000,000</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td class="id-col">55</td>
+            <td>North Korea</td>
+            <td>Pyongyang</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>26,000,000</td>
+            <td>Korean</td>
+          </tr>
+          <tr>
+            <td class="id-col">56</td>
+            <td>Taiwan</td>
+            <td>Taipei</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>23,000,000</td>
+            <td>Mandarin</td>
+          </tr>
+          <tr>
+            <td class="id-col">57</td>
+            <td>Niger</td>
+            <td>Niamey</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>27,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">58</td>
+            <td>Burkina Faso</td>
+            <td>Ouagadougou</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>23,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">59</td>
+            <td>Mali</td>
+            <td>Bamako</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>23,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">60</td>
+            <td>Sri Lanka</td>
+            <td>Colombo</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>22,000,000</td>
+            <td>Sinhala / Tamil</td>
+          </tr>
+          <tr>
+            <td class="id-col">61</td>
+            <td>Syria</td>
+            <td>Damascus</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>23,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">62</td>
+            <td>Kazakhstan</td>
+            <td>Astana</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>20,000,000</td>
+            <td>Kazakh / Russian</td>
+          </tr>
+          <tr>
+            <td class="id-col">63</td>
+            <td>Chile</td>
+            <td>Santiago</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>19,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">64</td>
+            <td>Romania</td>
+            <td>Bucharest</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>19,000,000</td>
+            <td>Romanian</td>
+          </tr>
+          <tr>
+            <td class="id-col">65</td>
+            <td>Zambia</td>
+            <td>Lusaka</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>20,000,000</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td class="id-col">66</td>
+            <td>Malawi</td>
+            <td>Lilongwe</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>21,000,000</td>
+            <td>English / Chewa</td>
+          </tr>
+          <tr>
+            <td class="id-col">67</td>
+            <td>Ecuador</td>
+            <td>Quito</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>18,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">68</td>
+            <td>Netherlands</td>
+            <td>Amsterdam</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>17,800,000</td>
+            <td>Dutch</td>
+          </tr>
+          <tr>
+            <td class="id-col">69</td>
+            <td>Somalia</td>
+            <td>Mogadishu</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>18,000,000</td>
+            <td>Somali / Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">70</td>
+            <td>Guatemala</td>
+            <td>Guatemala City</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>18,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">71</td>
+            <td>Chad</td>
+            <td>N'Djamena</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>18,000,000</td>
+            <td>French / Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">72</td>
+            <td>Senegal</td>
+            <td>Dakar</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>18,000,000</td>
+            <td>French / Wolof</td>
+          </tr>
+          <tr>
+            <td class="id-col">73</td>
+            <td>Cambodia</td>
+            <td>Phnom Penh</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>17,000,000</td>
+            <td>Khmer</td>
+          </tr>
+          <tr>
+            <td class="id-col">74</td>
+            <td>Zimbabwe</td>
+            <td>Harare</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>16,000,000</td>
+            <td>English / Shona</td>
+          </tr>
+          <tr>
+            <td class="id-col">75</td>
+            <td>Guinea</td>
+            <td>Conakry</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>14,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">76</td>
+            <td>Rwanda</td>
+            <td>Kigali</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>14,000,000</td>
+            <td>Kinyarwanda</td>
+          </tr>
+          <tr>
+            <td class="id-col">77</td>
+            <td>Benin</td>
+            <td>Porto-Novo</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>13,000,000</td>
+            <td>French</td>
+          </tr>
+          <tr>
+            <td class="id-col">78</td>
+            <td>Burundi</td>
+            <td>Gitega</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>13,000,000</td>
+            <td>Kirundi / French</td>
+          </tr>
+          <tr>
+            <td class="id-col">79</td>
+            <td>Tunisia</td>
+            <td>Tunis</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>12,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">80</td>
+            <td>Bolivia</td>
+            <td>Sucre</td>
+            <td>
+              <span class="continent-badge south-america">S. America</span>
+            </td>
+            <td>12,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">81</td>
+            <td>Belgium</td>
+            <td>Brussels</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>11,700,000</td>
+            <td>Dutch / French</td>
+          </tr>
+          <tr>
+            <td class="id-col">82</td>
+            <td>Haiti</td>
+            <td>Port-au-Prince</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>11,500,000</td>
+            <td>Creole / French</td>
+          </tr>
+          <tr>
+            <td class="id-col">83</td>
+            <td>Jordan</td>
+            <td>Amman</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>11,000,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">84</td>
+            <td>Cuba</td>
+            <td>Havana</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>11,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">85</td>
+            <td>South Sudan</td>
+            <td>Juba</td>
+            <td><span class="continent-badge africa">Africa</span></td>
+            <td>11,000,000</td>
+            <td>English</td>
+          </tr>
+          <tr>
+            <td class="id-col">86</td>
+            <td>Dominican Republic</td>
+            <td>Santo Domingo</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>11,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">87</td>
+            <td>Czech Republic</td>
+            <td>Prague</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>10,800,000</td>
+            <td>Czech</td>
+          </tr>
+          <tr>
+            <td class="id-col">88</td>
+            <td>Sweden</td>
+            <td>Stockholm</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>10,500,000</td>
+            <td>Swedish</td>
+          </tr>
+          <tr>
+            <td class="id-col">89</td>
+            <td>Greece</td>
+            <td>Athens</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>10,300,000</td>
+            <td>Greek</td>
+          </tr>
+          <tr>
+            <td class="id-col">90</td>
+            <td>Portugal</td>
+            <td>Lisbon</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>10,400,000</td>
+            <td>Portuguese</td>
+          </tr>
+          <tr>
+            <td class="id-col">91</td>
+            <td>Azerbaijan</td>
+            <td>Baku</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>10,000,000</td>
+            <td>Azerbaijani</td>
+          </tr>
+          <tr>
+            <td class="id-col">92</td>
+            <td>Hungary</td>
+            <td>Budapest</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>9,600,000</td>
+            <td>Hungarian</td>
+          </tr>
+          <tr>
+            <td class="id-col">93</td>
+            <td>Israel</td>
+            <td>Jerusalem</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>9,700,000</td>
+            <td>Hebrew</td>
+          </tr>
+          <tr>
+            <td class="id-col">94</td>
+            <td>Honduras</td>
+            <td>Tegucigalpa</td>
+            <td>
+              <span class="continent-badge north-america">N. America</span>
+            </td>
+            <td>10,000,000</td>
+            <td>Spanish</td>
+          </tr>
+          <tr>
+            <td class="id-col">95</td>
+            <td>Tajikistan</td>
+            <td>Dushanbe</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>10,000,000</td>
+            <td>Tajik</td>
+          </tr>
+          <tr>
+            <td class="id-col">96</td>
+            <td>United Arab Emirates</td>
+            <td>Abu Dhabi</td>
+            <td><span class="continent-badge asia">Asia</span></td>
+            <td>9,500,000</td>
+            <td>Arabic</td>
+          </tr>
+          <tr>
+            <td class="id-col">97</td>
+            <td>Belarus</td>
+            <td>Minsk</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>9,200,000</td>
+            <td>Belarusian</td>
+          </tr>
+          <tr>
+            <td class="id-col">98</td>
+            <td>Papua New Guinea</td>
+            <td>Port Moresby</td>
+            <td><span class="continent-badge oceania">Oceania</span></td>
+            <td>10,000,000</td>
+            <td>English / Tok Pisin</td>
+          </tr>
+          <tr>
+            <td class="id-col">99</td>
+            <td>Austria</td>
+            <td>Vienna</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>9,000,000</td>
+            <td>German</td>
+          </tr>
+          <tr>
+            <td class="id-col">100</td>
+            <td>Switzerland</td>
+            <td>Bern</td>
+            <td><span class="continent-badge europe">Europe</span></td>
+            <td>8,800,000</td>
+            <td>German / French</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function filterTable() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("countryTable");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 0; i < tr.length; i++) {
+          // Search in Country Name (col 1), Capital (col 2), or Continent (col 3)
+          var tdName = tr[i].getElementsByTagName("td")[1];
+          var tdCapital = tr[i].getElementsByTagName("td")[2];
+          var tdContinent = tr[i].getElementsByTagName("td")[3];
+
+          if (tdName || tdCapital) {
+            var txtName = tdName.textContent || tdName.innerText;
+            var txtCapital = tdCapital.textContent || tdCapital.innerText;
+            var txtContinent = tdContinent.textContent || tdContinent.innerText;
+
+            if (
+              txtName.toUpperCase().indexOf(filter) > -1 ||
+              txtCapital.toUpperCase().indexOf(filter) > -1 ||
+              txtContinent.toUpperCase().indexOf(filter) > -1
+            ) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

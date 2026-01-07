@@ -1,0 +1,11 @@
+ServerID,Region,Status,Owner,OS
+S-Alpha,East,Online,Admin,Linux
+S-Beta,West,Offline,Admin,Windows
+S-Gamma,North,Online,Guest,Linux
+S-Delta,South,Maintenance,DevOps,Linux
+S-Epsilon,East,Online,Admin,Windows
+S-Zeta,West,Online,Guest,Linux
+S-Eta,North,Offline,DevOps,Windows
+S-Theta,South,Online,Admin,Linux
+S-Iota,East,Online,Guest,Windows
+S-Kappa,West,Maintenance,Admin,Linux

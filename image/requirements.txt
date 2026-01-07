@@ -1,0 +1,16 @@
+langchain
+langchain-google-genai
+tavily-python
+openai
+langchain-openai
+langgraph
+PyPDF2
+pandas
+tavily-python
+python-dotenv
+Pillow
+numpy
+beautifulsoup4
+pydantic-ai
+pytesseract
+langchain-community

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Submissions - Judge System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: monospace; background: white; color: black; line-height: 1.4; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background: #f0f0f0; }
+        .menu { margin: 20px 0; border: 1px solid black; padding: 10px; }
+        .menu a { margin-right: 15px; text-decoration: none; color: black; }
+        .menu a:hover { text-decoration: underline; }
+        .user-info { float: right; }
+        .ac { background: #e8f5e9; } /* Greener background for fully accepted submissions */
+        .partial { background: #ffebee; } /* Slightly red background for submissions with errors */
+        .clickable { cursor: pointer; }
+        .clickable:hover { background-color: #e0e0e0; }
+        
+        /* Modal styles for submission details */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+        .modal-content { 
+            background-color: white; 
+            margin: 5% auto; 
+            padding: 20px; 
+            border: 1px solid black; 
+            width: 80%; 
+            max-width: 800px; 
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close { 
+            color: black; 
+            float: right; 
+            font-size: 28px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+        .close:hover { 
+            color: #666; 
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns for AC, WR, RE, TLE */
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .stat-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-box.ac { 
+            background-color: #e8f5e9; /* Greener background for AC */
+            border-color: #4caf50; /* Green border for AC */
+        }
+        .stat-box.tle { 
+            background-color: #ffe6e6; 
+            border-color: #f44336; /* Red border for TLE */
+        }
+        .stat-box.re { 
+            background-color: #fff0e6; 
+            border-color: #ff9800; /* Orange border for RE */
+        }
+        .stat-box.wa { 
+            background-color: #fff9e6; /* Light yellow for WA */
+            border-color: #ffc107; /* Yellow border for WA */
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Judge System</h1>
+        
+        <div class="menu">
+                <a href="index.html">Problems</a> | 
+                <a href="submissions.html">My Submissions</a> | 
+                <a href="scoreboard.html">Scoreboard</a> | 
+                <a href="submit.html">Submit</a> | 
+                <a href="#" onclick="logout()">Logout</a>
+            </span>
+        </div>
+
+        <h2>My Submissions</h2>
+        <div id="loading">Loading submissions...</div>
+        <table id="submissionsTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Problem</th>
+                    <th>Time</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="submissionsBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Modal for submission details -->
+    <div id="submissionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Submission Details</h2>
+            <div id="submissionDetails">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="_config.js"></script>
+    <script>
+        // Mock auth function for demonstration
+        function checkAuth() {
+            if (!localStorage.getItem('access_token')) {
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Mock API function for demonstration
+        async function apiRequest(endpoint) {
+            const token = localStorage.getItem('access_token');
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+            return await response.json();
+        }
+        
+        // Mock formatTime function
+        function formatTime(timestamp) {
+            return new Date(timestamp).toLocaleString();
+        }
+
+        async function loadSubmissions() {
+            try {
+                const submissions = await apiRequest('/user/mysubmissions/');
+                displaySubmissions(submissions);
+            } catch (error) {
+                document.getElementById('loading').textContent = 'Error loading submissions';
+            }
+        }
+
+        function displaySubmissions(submissions) {
+            const tbody = document.getElementById('submissionsBody');
+            tbody.innerHTML = '';
+            
+            submissions.forEach(sub => {
+                const row = document.createElement('tr');
+                
+                // Determine row class based on submission status
+                if (sub.status === 'done' && sub.fully_accepted ) {
+                    row.className = 'ac clickable'; // Green for fully accepted
+                } else if (sub.status === 'done' ) {
+                    row.className = 'partial clickable'; // Red for partial acceptance
+                } else {
+                    row.className = 'clickable'; // Default for other statuses
+                }
+                
+                row.setAttribute('data-submission-id', sub.submission_id);
+                row.onclick = () => showSubmissionDetails(sub.submission_id);
+                
+                row.innerHTML = `
+                    <td>${sub.submission_id}</td>
+                    <td>${sub.problem_title}</td>
+                    <td>${formatTime(sub.submission_time)}</td>
+                    <td>${sub.score}</td>
+                    <td>${sub.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('submissionsTable').style.display = 'table';
+        }
+
+        async function showSubmissionDetails(submissionId) {
+            try {
+                const submission = await apiRequest(`/user/submission/${submissionId}/`);
+                displaySubmissionDetails(submission, submissionId);
+            } catch (error) {
+                alert('Error loading submission details');
+            }
+        }
+
+        function displaySubmissionDetails(submission, submissionId) {
+            const detailsDiv = document.getElementById('submissionDetails');
+            
+            // Basic submission info
+            let html = `
+                <p><strong>Score:</strong> ${submission.score || 0}</p>
+                <p><strong>Submission Time:</strong> ${formatTime(submission.time)}</p>
+            `;
+            
+            // Test case statistics
+            html += `<h3>Test Case Statistics</h3>`;
+            html += `<div class="stats-grid">`;
+            
+            // AC count
+            html += `
+                <div class="stat-box ac">
+                    <span class="stat-number">${submission.AC || 0}</span>
+                    <span>Accepted</span>
+                </div>
+            `;
+            
+            // WR count
+            html += `
+                <div class="stat-box wa">
+                    <span class="stat-number">${submission.WR || 0}</span>
+                    <span>Wrong Answer</span>
+                </div>
+            `;
+            
+            // RE count
+            html += `
+                <div class="stat-box re">
+                    <span class="stat-number">${submission.RE || 0}</span>
+                    <span>Runtime Error</span>
+                </div>
+            `;
+            
+            // TLE count
+            html += `
+                <div class="stat-box tle">
+                    <span class="stat-number">${submission.TLE || 0}</span>
+                    <span>Time Limit Exceeded</span>
+                </div>
+            `;
+            
+            html += `</div>`;
+            
+            // Total test cases
+            const totalCases = (submission.AC || 0) + (submission.TLE || 0) + 
+                              (submission.RE || 0) + (submission.WR || 0);
+            html += `<p><strong>Total Test Cases:</strong> ${totalCases}</p>`;
+            
+            // Source code (if available)
+            if (submission.source_code) {
+                html += `
+                    <h3>Source Code</h3>
+                    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">${submission.source_code}</pre>
+                `;
+            }
+            
+            detailsDiv.innerHTML = html;
+            
+            // Show the modal
+            document.getElementById('submissionModal').style.display = 'block';
+        }
+
+        // Close modal when clicking the X
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('submissionModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside the modal content
+        window.onclick = function(event) {
+            const modal = document.getElementById('submissionModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = 'login.html';
+        }
+
+        checkAuth();
+        loadSubmissions();
+    </script>
+</body>
+</html>

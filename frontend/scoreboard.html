@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard - Judge System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: monospace; background: white; color: black; line-height: 1.4; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; overflow-x: auto; }
+        h1 { border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        th { background: #f0f0f0; }
+        .menu { margin: 20px 0; border: 1px solid black; padding: 10px; }
+        .menu a { margin-right: 15px; text-decoration: none; color: black; }
+        .menu a:hover { text-decoration: underline; }
+        .user-info { float: right; }
+        .rank-1 { background: #f0f0f0; font-weight: bold; }
+        .rank-2 { background: #e8e8e8; }
+        .rank-3 { background: #e0e0e0; }
+        .problem-header { writing-mode: vertical-lr; transform: rotate(180deg); white-space: nowrap; }
+        
+        /* Color coding for problem scores - Black and white theme */
+        .score-cell { font-weight: bold; }
+        .score-0 { background-color: #ffffff; } /* 0% - White */
+        .score-25 { background-color: #f0f0f0; } /* 25% - Very light gray */
+        .score-50 { background-color: #d0d0d0; } /* 50% - Light gray */
+        .score-75 { background-color: #a0a0a0; } /* 75% - Medium gray */
+        .score-100 { background-color: #808080; color: white; } /* 100% - Dark gray with white text */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Judge System</h1>
+        
+        <div class="menu">
+             <a href="index.html">Problems</a> | 
+                <a href="submissions.html">My Submissions</a> | 
+                <a href="scoreboard.html">Scoreboard</a> | 
+                <a href="submit.html">Submit</a> | 
+                <a href="#" onclick="logout()">Logout</a>
+            
+            <span class="user-info" id="userInfo" style="display: none;">
+            </span>
+            <span class="user-info" id="guestInfo">
+            </span>
+        </div>
+
+        <h2>Scoreboard</h2>
+        <div id="loading">Loading scoreboard...</div>
+        <div id="scoreboardContainer" style="display: none;">
+            <table id="scoreboardTable">
+                <thead id="scoreboardHeader">
+                    <tr>
+                        <th rowspan="2">Rank</th>
+                        <th rowspan="2">User</th>
+                        <th rowspan="2">Total Score</th>
+                        <!-- <th rowspan="2">Total Time</th> -->
+                        <th colspan="0" id="problemsHeader">Problems</th>
+                    </tr>
+                    <tr id="problemHeadersRow"></tr>
+                </thead>
+                <tbody id="scoreboardBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="_config.js"></script>
+    <script>
+        // Show/hide user info based on login status
+        if (localStorage.getItem('access_token')) {
+            document.getElementById('userInfo').style.display = 'inline';
+            document.getElementById('guestInfo').style.display = 'none';
+        } else {
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('guestInfo').style.display = 'inline';
+        }
+
+        // Function to get color class based on percentage
+        function getScoreClass(score, maxScore) {
+            if (maxScore === 0) return 'score-0';
+            
+            const percentage = (score / maxScore) * 100;
+            
+            if (percentage === 100) return 'score-100';
+            if (percentage >= 75) return 'score-75';
+            if (percentage >= 50) return 'score-50';
+            if (percentage >= 25) return 'score-25';
+            return 'score-0';
+        }
+
+        async function loadScoreboard() {
+            try {
+                const scoreboard = await fetch(`${API_BASE}/scoreboard/`).then(r => r.json());
+                displayScoreboard(scoreboard);
+            } catch (error) {
+                document.getElementById('loading').textContent = 'Error loading scoreboard';
+            }
+        }
+
+        function displayScoreboard(scoreboard) {
+            const tbody = document.getElementById('scoreboardBody');
+            const problemHeadersRow = document.getElementById('problemHeadersRow');
+            tbody.innerHTML = '';
+            problemHeadersRow.innerHTML = '';
+
+            // Get all unique problems from the first user's results
+            if (scoreboard.length > 0 && scoreboard[0].result.length > 0) {
+                const problems = scoreboard[0].result;
+                
+                // Create problem headers
+                problems.forEach(problem => {
+                    const th = document.createElement('th');
+                    th.className = 'problem-header';
+                    th.title = problem.problem_title;
+                    th.textContent = `${problem.problem_title} (${problem.max_score})`;
+                    problemHeadersRow.appendChild(th);
+                });
+
+                // Update problems header colspan
+                document.getElementById('problemsHeader').colSpan = problems.length;
+            }
+
+            // Create rows for each user
+            scoreboard.forEach((user, index) => {
+                const row = document.createElement('tr');
+                
+                // Add rank classes
+                if (index === 0) row.className = 'rank-1';
+                else if (index === 1) row.className = 'rank-2';
+                else if (index === 2) row.className = 'rank-3';
+
+                // Basic user info cells
+                let cells = `
+                    <td>${index + 1}</td>
+                    <td style="text-align: left;">${user.username}</td>
+                    <td><strong>${user.total_score}</strong></td>
+                    
+                `;
+                // <td>${Math.round(user.time)}s</td>
+
+                // Add problem scores with color coding
+                user.result.forEach(problem => {
+                    const scoreClass = getScoreClass(problem.score, problem.max_score);
+                    cells += `<td class="score-cell ${scoreClass}">${problem.score}</td>`;
+                });
+
+                row.innerHTML = cells;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('scoreboardContainer').style.display = 'block';
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = 'login.html';
+        }
+
+        loadScoreboard();
+    </script>
+</body>
+</html>

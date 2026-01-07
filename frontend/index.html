@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judge System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: monospace; background: white; color: black; line-height: 1.4; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background: #f0f0f0; }
+        button { border: 1px solid black; background: white; padding: 5px 10px; cursor: pointer; font-family: monospace; }
+        button:hover { background: #f0f0f0; }
+        .menu { margin: 20px 0; border: 1px solid black; padding: 10px; }
+        .menu a { margin-right: 15px; text-decoration: none; color: black; }
+        .menu a:hover { text-decoration: underline; }
+        .user-info { float: right; }
+        a { color: black; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Judge System</h1>
+        
+        <div class="menu">
+                <a href="index.html">Problems</a> | 
+                <a href="submissions.html">My Submissions</a> | 
+                <a href="scoreboard.html">Scoreboard</a> | 
+                <a href="submit.html">Submit</a> | 
+                <a href="#" onclick="logout()">Logout</a>
+            </span>
+        </div>
+
+        <h2>Problems</h2>
+        <div id="loading">Loading problems...</div>
+        <table id="problemsTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Memory Limit</th>
+                    <th>Time Limit</th>
+                    <th>File</th>
+                    <th>Submit</th>
+                </tr>
+            </thead>
+            <tbody id="problemsBody"></tbody>
+        </table>
+    </div>
+
+    <script src="_config.js"></script>
+    <script>
+        checkAuth();
+        
+        async function loadProblems() {
+            try {
+                const problems = await apiRequest('/user/problems/');
+                displayProblems(problems);
+            } catch (error) {
+                document.getElementById('loading').textContent = 'Error loading problems';
+            }
+        }
+
+        function displayProblems(problems) {
+            const tbody = document.getElementById('problemsBody');
+            tbody.innerHTML = '';
+            
+            problems.forEach(problem => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${problem.number}</td>
+                    <td>${problem.title}(${problem.max_score})</td>
+                    <td>${problem.memory_limit} MB</td>
+                    <td>${problem.time_limit*1000} ms</td>
+                    <td><a href="${problem.file}" download>Download</a></td>
+                    <td><button onclick="submitSolution(${problem.id})">Submit</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('problemsTable').style.display = 'table';
+        }
+
+        function submitSolution(problemId) {
+            window.location.href = `submit.html?problem=${problemId}`;
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = 'login.html';
+        }
+
+        loadProblems();
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+version: "3.9"
+services:
+  backend:
+    build: ./JudgeBackend
+    env_file:
+      - .env.backend
+    # ports:
+    #   - "8000:8001"
+    container_name: ai-agent-backend
+    depends_on:
+      - postgres
+    volumes:
+      - ./JudgeBackend/media/problems:/app/media/problems
+      - ./JudgeBackend/media/submissions:/app/media/submissions
+      # - ./JudgeBackend:/app
+      - static_files:/app/static
+      - problem_files:/app/media/problem_files
+    command: sh -c ' until pg_isready -h postgres -p 5432; do echo "Waiting for postgres..."; sleep 1; done;  python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8001' #gunicorn JudgeBackend.wsgi:application --bind 0.0.0.0:8001'
+
+  postgres:
+    image: postgres:13
+    expose:
+      - 5432:5432
+    env_file:
+      - .env.database
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+   
+    volumes:
+      - redis_data:/data
+
+  worker1:
+      build: ./Worker
+      container_name: worker1
+      env_file:
+        - .env.worker1
+      depends_on:
+        - redis
+      volumes:
+        # - problems:/app/problems
+        # - submissions:/app/submissions
+        - ./Worker/results:/app/results
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /etc/resolv.conf:/etc/resolv2.conf
+      privileged: true
+      security_opt:
+        - apparmor:unconfined
+        - seccomp=unconfined
+      cap_add:
+        - ALL
+      command: python3 worker.py
+  # worker2:
+  #     build: ./Worker
+  #     container_name: worker2
+  #     env_file:
+  #       - .env.worker2
+  #     depends_on:
+  #       - redis
+  #     volumes:
+  #       # - problems:/app/problems
+  #       # - submissions:/app/submissions
+  #       - ./Worker/results:/app/results
+  #       - /var/run/docker.sock:/var/run/docker.sock
+  #       - /etc/resolv.conf:/etc/resolv2.conf
+  #     privileged: true
+  #     security_opt:
+  #       - apparmor:unconfined
+  #       - seccomp=unconfined
+  #     cap_add:
+  #       - ALL
+  #     command: python3 worker.py
+  nginx:
+    build: ./frontend
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      # can be removed
+      - ./frontend:/usr/share/nginx/html
+      - problem_files:/usr/share/nginx/html/problem_files
+      - static_files:/usr/share/nginx/html/static
+    depends_on:
+      - backend 
+
+volumes:
+  redis_data:
+  problems:
+  submissions:
+  postgres-db:
+  problem_files:
+  static_files:

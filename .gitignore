@@ -1,0 +1,134 @@
+# Environment variables
+.env.backend
+.env.database
+.env.worker1
+.env
+.env.local
+.env.*.local
+
+# Virtual environments
+Worker/venv
+venv/
+ENV/
+env/
+.venv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+JudgeBackend/media
+/JudgeBackend/static
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Node (if applicable)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Test/Build artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Docker
+.dockerignore
+
+# IDE cache
+.cache/
+.vscode/settings.json
+
+# Ignore submissions, media, results, databases, and testcases
+# Submissions (match directories named "submission" or "submissions" anywhere)
+**/submissions/
+**/submission/
+
+# Media (anywhere)
+**/media/
+media/
+
+# Results (anywhere)
+**/results/
+results/
+
+# Testcases and test input/output files
+**/testcases/
+testcases/
+**/tests/
+tests/
+*.in
+*.ans
+
+# Database files
+*.sqlite3
+*.sqlite
+*.db
+db.sqlite3
+db.sqlite3-journal
+
+# Temporary and judge artifacts
+**/temp/
+temp/
+**/result/
+result/
+
+test/
+./save.txt
+test.py
+alltests/*

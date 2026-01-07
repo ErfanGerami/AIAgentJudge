@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Master Shopping List</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0fdf4; /* Light mint green background */
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 0;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .header {
+        background-color: #22c55e;
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2em;
+      }
+
+      .search-box {
+        padding: 20px;
+        background-color: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      #searchInput {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      #searchInput:focus {
+        border-color: #22c55e;
+      }
+
+      /* List Styling */
+      .shopping-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 70vh; /* Scrollable area */
+        overflow-y: auto;
+      }
+
+      .shopping-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .shopping-item:hover {
+        background-color: #f8fcf8;
+      }
+
+      .shopping-item.checked {
+        background-color: #f0fdf4;
+        text-decoration: line-through;
+        color: #888;
+      }
+
+      /* Custom Checkbox */
+      .checkbox-circle {
+        width: 24px;
+        height: 24px;
+        border: 2px solid #ddd;
+        border-radius: 50%;
+        margin-right: 15px;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .shopping-item.checked .checkbox-circle {
+        background-color: #22c55e;
+        border-color: #22c55e;
+      }
+
+      .shopping-item.checked .checkbox-circle::after {
+        content: "✔";
+        color: white;
+        font-size: 14px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .item-details {
+        flex-grow: 1;
+      }
+
+      .item-name {
+        font-weight: 600;
+        font-size: 1.1em;
+        display: block;
+      }
+
+      .item-meta {
+        font-size: 0.85em;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+
+      .category-tag {
+        background-color: #e5e7eb;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.75em;
+        margin-left: 10px;
+        color: #374151;
+        font-weight: normal;
+        vertical-align: middle;
+      }
+
+      .price {
+        font-weight: bold;
+        color: #22c55e;
+        min-width: 60px;
+        text-align: right;
+      }
+
+      .footer-bar {
+        background-color: #f9fafb;
+        padding: 15px;
+        text-align: center;
+        border-top: 1px solid #e5e7eb;
+        font-weight: bold;
+        color: #374151;
+      }
+
+      /* Color coding categories */
+      .cat-produce {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+      .cat-dairy {
+        background-color: #e0f2fe;
+        color: #075985;
+      }
+      .cat-meat {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+      .cat-pantry {
+        background-color: #ffedd5;
+        color: #9a3412;
+      }
+      .cat-frozen {
+        background-color: #e0e7ff;
+        color: #3730a3;
+      }
+      .cat-household {
+        background-color: #f3f4f6;
+        color: #1f2937;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🛒 Master Grocery List</h1>
+      </div>
+
+      <div class="search-box">
+        <input
+          type="text"
+          id="searchInput"
+          onkeyup="filterList()"
+          placeholder="Search items, categories, or aisles..."
+        />
+      </div>
+
+      <ul class="shopping-list" id="shoppingList">
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Apples (Gala)
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Fresh Fruit</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Bananas
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Organic</span>
+          </div>
+          <div class="price">$0.69</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Avocados
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Bulk</span>
+          </div>
+          <div class="price">$1.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Spinach (Bag)
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Salads</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Carrots
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Root Veg</span>
+          </div>
+          <div class="price">$1.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Broccoli
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Fresh Veg</span>
+          </div>
+          <div class="price">$2.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Garlic
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Herbs</span>
+          </div>
+          <div class="price">$0.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Onions (Yellow)
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Root Veg</span>
+          </div>
+          <div class="price">$1.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Potatoes (Russet)
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • 5lb Bag</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Tomatoes (Roma)
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Vine</span>
+          </div>
+          <div class="price">$0.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Cucumber
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Salad Veg</span>
+          </div>
+          <div class="price">$0.89</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Bell Peppers
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Mixed</span>
+          </div>
+          <div class="price">$3.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Strawberries
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Berries</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Blueberries
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Berries</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Lemons
+              <span class="category-tag cat-produce">Produce</span></span
+            ><span class="item-meta">Aisle 1 • Citrus</span>
+          </div>
+          <div class="price">$0.79</div>
+        </li>
+
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Whole Milk
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • 1 Gallon</span>
+          </div>
+          <div class="price">$3.89</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Almond Milk
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Unsweetened</span>
+          </div>
+          <div class="price">$3.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Eggs (Dozen)
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Large Grade A</span>
+          </div>
+          <div class="price">$4.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Butter (Salted)
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • 4 Sticks</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Cheddar Cheese
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Block</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Greek Yogurt
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Plain</span>
+          </div>
+          <div class="price">$5.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Sour Cream
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Tub</span>
+          </div>
+          <div class="price">$2.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Parmesan Cheese
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Grated</span>
+          </div>
+          <div class="price">$4.79</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Heavy Cream
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Pint</span>
+          </div>
+          <div class="price">$3.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Cream Cheese
+              <span class="category-tag cat-dairy">Dairy</span></span
+            ><span class="item-meta">Aisle 12 • Block</span>
+          </div>
+          <div class="price">$2.50</div>
+        </li>
+
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Chicken Breast
+              <span class="category-tag cat-meat">Meat</span></span
+            ><span class="item-meta">Back Wall • Boneless</span>
+          </div>
+          <div class="price">$10.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Ground Beef <span class="category-tag cat-meat">Meat</span></span
+            ><span class="item-meta">Back Wall • 90% Lean</span>
+          </div>
+          <div class="price">$6.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Bacon <span class="category-tag cat-meat">Meat</span></span
+            ><span class="item-meta">Back Wall • Thick Cut</span>
+          </div>
+          <div class="price">$7.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Salmon Fillet
+              <span class="category-tag cat-meat">Meat</span></span
+            ><span class="item-meta">Seafood Dept • Fresh</span>
+          </div>
+          <div class="price">$12.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Deli Turkey <span class="category-tag cat-meat">Meat</span></span
+            ><span class="item-meta">Deli Counter • Sliced</span>
+          </div>
+          <div class="price">$8.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Pork Chops <span class="category-tag cat-meat">Meat</span></span
+            ><span class="item-meta">Back Wall • Bone-in</span>
+          </div>
+          <div class="price">$5.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Sausages <span class="category-tag cat-meat">Meat</span></span
+            ><span class="item-meta">Back Wall • Italian</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Sliced Bread
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 8 • Whole Wheat</span>
+          </div>
+          <div class="price">$3.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Pasta (Spaghetti)
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 4 • Dry</span>
+          </div>
+          <div class="price">$1.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Pasta Sauce
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 4 • Marinara</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Rice (Jasmine)
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 4 • 5lb Bag</span>
+          </div>
+          <div class="price">$6.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Black Beans
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Canned</span>
+          </div>
+          <div class="price">$0.89</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Peanut Butter
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Creamy</span>
+          </div>
+          <div class="price">$3.79</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Jelly/Jam
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Strawberry</span>
+          </div>
+          <div class="price">$3.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Cereal <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 5 • Breakfast</span>
+          </div>
+          <div class="price">$4.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Oats <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 5 • Rolled</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Coffee <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 6 • Ground</span>
+          </div>
+          <div class="price">$8.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Tea Bags
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 6 • Green Tea</span>
+          </div>
+          <div class="price">$3.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Olive Oil
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Extra Virgin</span>
+          </div>
+          <div class="price">$9.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Vegetable Oil
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Cooking</span>
+          </div>
+          <div class="price">$3.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Flour <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • All Purpose</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Sugar <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Granulated</span>
+          </div>
+          <div class="price">$2.89</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Salt <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Iodized</span>
+          </div>
+          <div class="price">$0.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Pepper <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Ground</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Canned Tuna
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Seafood</span>
+          </div>
+          <div class="price">$1.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Soup <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Canned</span>
+          </div>
+          <div class="price">$1.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Mac & Cheese
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 4 • Boxed</span>
+          </div>
+          <div class="price">$1.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Tortilla Chips
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 9 • Snacks</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Salsa <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 9 • Jar</span>
+          </div>
+          <div class="price">$3.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Popcorn <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 9 • Microwave</span>
+          </div>
+          <div class="price">$3.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Crackers
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 9 • Snacks</span>
+          </div>
+          <div class="price">$3.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Nuts (Almonds)
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 9 • Snacks</span>
+          </div>
+          <div class="price">$7.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Granola Bars
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 5 • Snacks</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Honey <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Sweeteners</span>
+          </div>
+          <div class="price">$5.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Soy Sauce
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 10 • Asian</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Taco Shells
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 10 • Mexican</span>
+          </div>
+          <div class="price">$2.49</div>
+        </li>
+
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Ice Cream
+              <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 14 • Tub</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Frozen Pizza
+              <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 15 • Dinner</span>
+          </div>
+          <div class="price">$6.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Frozen Peas
+              <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 13 • Veggies</span>
+          </div>
+          <div class="price">$1.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Frozen Berries
+              <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 13 • Fruit</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Waffles <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 13 • Breakfast</span>
+          </div>
+          <div class="price">$3.29</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >French Fries
+              <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 15 • Sides</span>
+          </div>
+          <div class="price">$3.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Fish Sticks
+              <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 15 • Seafood</span>
+          </div>
+          <div class="price">$5.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >TV Dinner
+              <span class="category-tag cat-frozen">Frozen</span></span
+            ><span class="item-meta">Aisle 15 • Meals</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Toilet Paper
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 11 • Paper Goods</span>
+          </div>
+          <div class="price">$12.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Paper Towels
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 11 • Paper Goods</span>
+          </div>
+          <div class="price">$9.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Dish Soap
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 10 • Cleaning</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Laundry Detergent
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 10 • Cleaning</span>
+          </div>
+          <div class="price">$11.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Sponges
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 10 • Cleaning</span>
+          </div>
+          <div class="price">$3.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Trash Bags
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 10 • Cleaning</span>
+          </div>
+          <div class="price">$8.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Aluminum Foil
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 8 • Baking</span>
+          </div>
+          <div class="price">$4.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Ziploc Bags
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 8 • Storage</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Shampoo
+              <span class="category-tag cat-household">Personal</span></span
+            ><span class="item-meta">Aisle 7 • Hair Care</span>
+          </div>
+          <div class="price">$6.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Conditioner
+              <span class="category-tag cat-household">Personal</span></span
+            ><span class="item-meta">Aisle 7 • Hair Care</span>
+          </div>
+          <div class="price">$6.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Body Wash
+              <span class="category-tag cat-household">Personal</span></span
+            ><span class="item-meta">Aisle 7 • Bath</span>
+          </div>
+          <div class="price">$5.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Toothpaste
+              <span class="category-tag cat-household">Personal</span></span
+            ><span class="item-meta">Aisle 7 • Oral Care</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Toothbrush
+              <span class="category-tag cat-household">Personal</span></span
+            ><span class="item-meta">Aisle 7 • Oral Care</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Deodorant
+              <span class="category-tag cat-household">Personal</span></span
+            ><span class="item-meta">Aisle 7 • Hygiene</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Hand Soap
+              <span class="category-tag cat-household">Personal</span></span
+            ><span class="item-meta">Aisle 7 • Hygiene</span>
+          </div>
+          <div class="price">$2.49</div>
+        </li>
+
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Batteries (AA)
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Front Desk • Electronics</span>
+          </div>
+          <div class="price">$8.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Light Bulbs
+              <span class="category-tag cat-household">Household</span></span
+            ><span class="item-meta">Aisle 11 • Home</span>
+          </div>
+          <div class="price">$7.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Cat Food
+              <span class="category-tag cat-household">Pets</span></span
+            ><span class="item-meta">Aisle 16 • Wet</span>
+          </div>
+          <div class="price">$0.89</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Dog Treats
+              <span class="category-tag cat-household">Pets</span></span
+            ><span class="item-meta">Aisle 16 • Dry</span>
+          </div>
+          <div class="price">$4.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Soda (12 Pack)
+              <span class="category-tag cat-pantry">Drinks</span></span
+            ><span class="item-meta">Aisle 9 • Cola</span>
+          </div>
+          <div class="price">$6.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Sparkling Water
+              <span class="category-tag cat-pantry">Drinks</span></span
+            ><span class="item-meta">Aisle 9 • 8 Pack</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Orange Juice
+              <span class="category-tag cat-dairy">Drinks</span></span
+            ><span class="item-meta">Aisle 12 • Refrigerated</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Apple Juice
+              <span class="category-tag cat-pantry">Drinks</span></span
+            ><span class="item-meta">Aisle 6 • Bottle</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Bottled Water
+              <span class="category-tag cat-pantry">Drinks</span></span
+            ><span class="item-meta">Aisle 9 • 24 Pack</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Ketchup <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Condiments</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Mustard <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Condiments</span>
+          </div>
+          <div class="price">$1.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Mayonnaise
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Condiments</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >BBQ Sauce
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Condiments</span>
+          </div>
+          <div class="price">$2.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Ranch Dressing
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Dressing</span>
+          </div>
+          <div class="price">$3.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Vinegar <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Cooking</span>
+          </div>
+          <div class="price">$2.49</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Baking Soda
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Baking</span>
+          </div>
+          <div class="price">$0.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Vanilla Extract
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Baking</span>
+          </div>
+          <div class="price">$4.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Chocolate Chips
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Baking</span>
+          </div>
+          <div class="price">$3.50</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Cake Mix
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 3 • Baking</span>
+          </div>
+          <div class="price">$1.99</div>
+        </li>
+        <li class="shopping-item" onclick="toggleItem(this)">
+          <div class="checkbox-circle"></div>
+          <div class="item-details">
+            <span class="item-name"
+              >Hot Sauce
+              <span class="category-tag cat-pantry">Pantry</span></span
+            ><span class="item-meta">Aisle 2 • Condiments</span>
+          </div>
+          <div class="price">$3.99</div>
+        </li>
+      </ul>
+
+      <div class="footer-bar">Items Checked: <span id="count">0</span></div>
+    </div>
+
+    <script>
+      function toggleItem(element) {
+        element.classList.toggle("checked");
+        updateCount();
+      }
+
+      function updateCount() {
+        var checkedItems = document.querySelectorAll(
+          ".shopping-item.checked"
+        ).length;
+        document.getElementById("count").innerText = checkedItems;
+      }
+
+      function filterList() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toUpperCase();
+        var ul = document.getElementById("shoppingList");
+        var li = ul.getElementsByTagName("li");
+
+        for (var i = 0; i < li.length; i++) {
+          var itemText = li[i].textContent || li[i].innerText;
+          if (itemText.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "flex";
+          } else {
+            li[i].style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

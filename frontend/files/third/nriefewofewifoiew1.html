@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detailed Top 100 Universities</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f9;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px; /* Widened container for more data */
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+      }
+
+      /* Search Bar Styling */
+      #searchInput {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 15px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #2c3e50;
+        color: white;
+        position: sticky;
+        top: 0;
+        white-space: nowrap;
+      }
+
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+
+      .rank-col {
+        font-weight: bold;
+        color: #7f8c8d;
+        width: 40px;
+        text-align: center;
+      }
+
+      /* Mobile Responsive Styling */
+      @media screen and (max-width: 768px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+        thead tr {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+        }
+        tr {
+          border: 1px solid #ccc;
+          margin-bottom: 15px;
+          border-radius: 5px;
+          overflow: hidden;
+        }
+        td {
+          border: none;
+          border-bottom: 1px solid #eee;
+          position: relative;
+          padding-left: 50%;
+          text-align: right; /* Align content to right on mobile */
+        }
+        td:before {
+          position: absolute;
+          top: 12px;
+          left: 15px;
+          width: 45%;
+          white-space: nowrap;
+          font-weight: bold;
+          text-align: left;
+          color: #2c3e50;
+        }
+        /* Labels for mobile view */
+        td:nth-of-type(1):before {
+          content: "Rank";
+        }
+        td:nth-of-type(2):before {
+          content: "University";
+        }
+        td:nth-of-type(3):before {
+          content: "Country";
+        }
+        td:nth-of-type(4):before {
+          content: "Location";
+        }
+        td:nth-of-type(5):before {
+          content: "Founded";
+        }
+        td:nth-of-type(6):before {
+          content: "Students";
+        }
+
+        .rank-col {
+          width: auto;
+          text-align: right;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Global University Database</h1>
+      <input
+        type="text"
+        id="searchInput"
+        onkeyup="filterTable()"
+        placeholder="Search for university, country, or year..."
+      />
+
+      <table id="uniTable">
+        <thead>
+          <tr>
+            <th class="rank-col">#</th>
+            <th>University Name</th>
+            <th>Country</th>
+            <th>Location</th>
+            <th>Founded</th>
+            <th>Students</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rank-col">1</td>
+            <td>Massachusetts Institute of Technology (MIT)</td>
+            <td>USA</td>
+            <td>Cambridge, MA</td>
+            <td>1861</td>
+            <td>11,934</td>
+          </tr>
+          <tr>
+            <td class="rank-col">2</td>
+            <td>University of Cambridge</td>
+            <td>UK</td>
+            <td>Cambridge</td>
+            <td>1209</td>
+            <td>24,270</td>
+          </tr>
+          <tr>
+            <td class="rank-col">3</td>
+            <td>University of Oxford</td>
+            <td>UK</td>
+            <td>Oxford</td>
+            <td>1096</td>
+            <td>26,497</td>
+          </tr>
+          <tr>
+            <td class="rank-col">4</td>
+            <td>Harvard University</td>
+            <td>USA</td>
+            <td>Cambridge, MA</td>
+            <td>1636</td>
+            <td>23,731</td>
+          </tr>
+          <tr>
+            <td class="rank-col">5</td>
+            <td>Stanford University</td>
+            <td>USA</td>
+            <td>Stanford, CA</td>
+            <td>1885</td>
+            <td>17,249</td>
+          </tr>
+          <tr>
+            <td class="rank-col">6</td>
+            <td>Imperial College London</td>
+            <td>UK</td>
+            <td>London</td>
+            <td>1907</td>
+            <td>20,749</td>
+          </tr>
+          <tr>
+            <td class="rank-col">7</td>
+            <td>ETH Zurich</td>
+            <td>Switzerland</td>
+            <td>Zurich</td>
+            <td>1855</td>
+            <td>24,534</td>
+          </tr>
+          <tr>
+            <td class="rank-col">8</td>
+            <td>National University of Singapore (NUS)</td>
+            <td>Singapore</td>
+            <td>Singapore</td>
+            <td>1905</td>
+            <td>42,600</td>
+          </tr>
+          <tr>
+            <td class="rank-col">9</td>
+            <td>UCL (University College London)</td>
+            <td>UK</td>
+            <td>London</td>
+            <td>1826</td>
+            <td>43,800</td>
+          </tr>
+          <tr>
+            <td class="rank-col">10</td>
+            <td>University of California, Berkeley</td>
+            <td>USA</td>
+            <td>Berkeley, CA</td>
+            <td>1868</td>
+            <td>45,036</td>
+          </tr>
+          <tr>
+            <td class="rank-col">11</td>
+            <td>University of Chicago</td>
+            <td>USA</td>
+            <td>Chicago, IL</td>
+            <td>1890</td>
+            <td>18,452</td>
+          </tr>
+          <tr>
+            <td class="rank-col">12</td>
+            <td>University of Pennsylvania</td>
+            <td>USA</td>
+            <td>Philadelphia, PA</td>
+            <td>1740</td>
+            <td>26,675</td>
+          </tr>
+          <tr>
+            <td class="rank-col">13</td>
+            <td>Cornell University</td>
+            <td>USA</td>
+            <td>Ithaca, NY</td>
+            <td>1865</td>
+            <td>25,898</td>
+          </tr>
+          <tr>
+            <td class="rank-col">14</td>
+            <td>University of Melbourne</td>
+            <td>Australia</td>
+            <td>Melbourne</td>
+            <td>1853</td>
+            <td>54,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">15</td>
+            <td>California Institute of Technology (Caltech)</td>
+            <td>USA</td>
+            <td>Pasadena, CA</td>
+            <td>1891</td>
+            <td>2,397</td>
+          </tr>
+          <tr>
+            <td class="rank-col">16</td>
+            <td>Yale University</td>
+            <td>USA</td>
+            <td>New Haven, CT</td>
+            <td>1701</td>
+            <td>14,567</td>
+          </tr>
+          <tr>
+            <td class="rank-col">17</td>
+            <td>Peking University</td>
+            <td>China</td>
+            <td>Beijing</td>
+            <td>1898</td>
+            <td>34,917</td>
+          </tr>
+          <tr>
+            <td class="rank-col">18</td>
+            <td>Princeton University</td>
+            <td>USA</td>
+            <td>Princeton, NJ</td>
+            <td>1746</td>
+            <td>8,478</td>
+          </tr>
+          <tr>
+            <td class="rank-col">19</td>
+            <td>University of New South Wales (UNSW)</td>
+            <td>Australia</td>
+            <td>Sydney</td>
+            <td>1949</td>
+            <td>63,227</td>
+          </tr>
+          <tr>
+            <td class="rank-col">20</td>
+            <td>University of Sydney</td>
+            <td>Australia</td>
+            <td>Sydney</td>
+            <td>1850</td>
+            <td>61,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">21</td>
+            <td>University of Toronto</td>
+            <td>Canada</td>
+            <td>Toronto</td>
+            <td>1827</td>
+            <td>97,066</td>
+          </tr>
+          <tr>
+            <td class="rank-col">22</td>
+            <td>University of Edinburgh</td>
+            <td>UK</td>
+            <td>Edinburgh</td>
+            <td>1582</td>
+            <td>37,830</td>
+          </tr>
+          <tr>
+            <td class="rank-col">23</td>
+            <td>Columbia University</td>
+            <td>USA</td>
+            <td>New York, NY</td>
+            <td>1754</td>
+            <td>33,776</td>
+          </tr>
+          <tr>
+            <td class="rank-col">24</td>
+            <td>Université PSL</td>
+            <td>France</td>
+            <td>Paris</td>
+            <td>2010</td>
+            <td>17,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">25</td>
+            <td>Tsinghua University</td>
+            <td>China</td>
+            <td>Beijing</td>
+            <td>1911</td>
+            <td>53,302</td>
+          </tr>
+          <tr>
+            <td class="rank-col">26</td>
+            <td>Nanyang Technological University (NTU)</td>
+            <td>Singapore</td>
+            <td>Singapore</td>
+            <td>1981</td>
+            <td>31,687</td>
+          </tr>
+          <tr>
+            <td class="rank-col">27</td>
+            <td>University of Hong Kong (HKU)</td>
+            <td>Hong Kong</td>
+            <td>Pokfulam</td>
+            <td>1911</td>
+            <td>31,844</td>
+          </tr>
+          <tr>
+            <td class="rank-col">28</td>
+            <td>Johns Hopkins University</td>
+            <td>USA</td>
+            <td>Baltimore, MD</td>
+            <td>1876</td>
+            <td>27,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">29</td>
+            <td>University of Tokyo</td>
+            <td>Japan</td>
+            <td>Tokyo</td>
+            <td>1877</td>
+            <td>27,279</td>
+          </tr>
+          <tr>
+            <td class="rank-col">30</td>
+            <td>University of California, Los Angeles (UCLA)</td>
+            <td>USA</td>
+            <td>Los Angeles, CA</td>
+            <td>1919</td>
+            <td>46,116</td>
+          </tr>
+          <tr>
+            <td class="rank-col">31</td>
+            <td>McGill University</td>
+            <td>Canada</td>
+            <td>Montreal</td>
+            <td>1821</td>
+            <td>39,267</td>
+          </tr>
+          <tr>
+            <td class="rank-col">32</td>
+            <td>University of Manchester</td>
+            <td>UK</td>
+            <td>Manchester</td>
+            <td>1824</td>
+            <td>44,635</td>
+          </tr>
+          <tr>
+            <td class="rank-col">33</td>
+            <td>University of Michigan-Ann Arbor</td>
+            <td>USA</td>
+            <td>Ann Arbor, MI</td>
+            <td>1817</td>
+            <td>50,278</td>
+          </tr>
+          <tr>
+            <td class="rank-col">34</td>
+            <td>Australian National University (ANU)</td>
+            <td>Australia</td>
+            <td>Canberra</td>
+            <td>1946</td>
+            <td>25,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">35</td>
+            <td>University of British Columbia</td>
+            <td>Canada</td>
+            <td>Vancouver</td>
+            <td>1908</td>
+            <td>66,512</td>
+          </tr>
+          <tr>
+            <td class="rank-col">36</td>
+            <td>EPFL</td>
+            <td>Switzerland</td>
+            <td>Lausanne</td>
+            <td>1853</td>
+            <td>12,574</td>
+          </tr>
+          <tr>
+            <td class="rank-col">37</td>
+            <td>Technical University of Munich</td>
+            <td>Germany</td>
+            <td>Munich</td>
+            <td>1868</td>
+            <td>50,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">38</td>
+            <td>Institut Polytechnique de Paris</td>
+            <td>France</td>
+            <td>Palaiseau</td>
+            <td>2019</td>
+            <td>8,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">39</td>
+            <td>New York University (NYU)</td>
+            <td>USA</td>
+            <td>New York, NY</td>
+            <td>1831</td>
+            <td>53,576</td>
+          </tr>
+          <tr>
+            <td class="rank-col">40</td>
+            <td>King's College London</td>
+            <td>UK</td>
+            <td>London</td>
+            <td>1829</td>
+            <td>33,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">41</td>
+            <td>Seoul National University</td>
+            <td>South Korea</td>
+            <td>Seoul</td>
+            <td>1946</td>
+            <td>28,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">42</td>
+            <td>Monash University</td>
+            <td>Australia</td>
+            <td>Melbourne</td>
+            <td>1958</td>
+            <td>86,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">43</td>
+            <td>University of Queensland</td>
+            <td>Australia</td>
+            <td>Brisbane</td>
+            <td>1909</td>
+            <td>55,305</td>
+          </tr>
+          <tr>
+            <td class="rank-col">44</td>
+            <td>Kyoto University</td>
+            <td>Japan</td>
+            <td>Kyoto</td>
+            <td>1897</td>
+            <td>22,700</td>
+          </tr>
+          <tr>
+            <td class="rank-col">45</td>
+            <td>London School of Economics (LSE)</td>
+            <td>UK</td>
+            <td>London</td>
+            <td>1895</td>
+            <td>12,975</td>
+          </tr>
+          <tr>
+            <td class="rank-col">46</td>
+            <td>Zhejiang University</td>
+            <td>China</td>
+            <td>Hangzhou</td>
+            <td>1897</td>
+            <td>60,739</td>
+          </tr>
+          <tr>
+            <td class="rank-col">47</td>
+            <td>Northwestern University</td>
+            <td>USA</td>
+            <td>Evanston, IL</td>
+            <td>1851</td>
+            <td>23,410</td>
+          </tr>
+          <tr>
+            <td class="rank-col">48</td>
+            <td>Delft University of Technology</td>
+            <td>Netherlands</td>
+            <td>Delft</td>
+            <td>1842</td>
+            <td>27,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">49</td>
+            <td>Chinese University of Hong Kong (CUHK)</td>
+            <td>Hong Kong</td>
+            <td>Shatin</td>
+            <td>1963</td>
+            <td>20,600</td>
+          </tr>
+          <tr>
+            <td class="rank-col">50</td>
+            <td>Fudan University</td>
+            <td>China</td>
+            <td>Shanghai</td>
+            <td>1905</td>
+            <td>36,300</td>
+          </tr>
+          <tr>
+            <td class="rank-col">51</td>
+            <td>Shanghai Jiao Tong University</td>
+            <td>China</td>
+            <td>Shanghai</td>
+            <td>1896</td>
+            <td>42,800</td>
+          </tr>
+          <tr>
+            <td class="rank-col">52</td>
+            <td>Carnegie Mellon University</td>
+            <td>USA</td>
+            <td>Pittsburgh, PA</td>
+            <td>1900</td>
+            <td>15,818</td>
+          </tr>
+          <tr>
+            <td class="rank-col">53</td>
+            <td>University of Amsterdam</td>
+            <td>Netherlands</td>
+            <td>Amsterdam</td>
+            <td>1632</td>
+            <td>41,206</td>
+          </tr>
+          <tr>
+            <td class="rank-col">54</td>
+            <td>Ludwig-Maximilians-Universität München</td>
+            <td>Germany</td>
+            <td>Munich</td>
+            <td>1472</td>
+            <td>52,425</td>
+          </tr>
+          <tr>
+            <td class="rank-col">55</td>
+            <td>University of Bristol</td>
+            <td>UK</td>
+            <td>Bristol</td>
+            <td>1876</td>
+            <td>27,375</td>
+          </tr>
+          <tr>
+            <td class="rank-col">56</td>
+            <td>KAIST</td>
+            <td>South Korea</td>
+            <td>Daejeon</td>
+            <td>1971</td>
+            <td>10,793</td>
+          </tr>
+          <tr>
+            <td class="rank-col">57</td>
+            <td>Duke University</td>
+            <td>USA</td>
+            <td>Durham, NC</td>
+            <td>1838</td>
+            <td>17,620</td>
+          </tr>
+          <tr>
+            <td class="rank-col">58</td>
+            <td>University of Texas at Austin</td>
+            <td>USA</td>
+            <td>Austin, TX</td>
+            <td>1883</td>
+            <td>52,384</td>
+          </tr>
+          <tr>
+            <td class="rank-col">59</td>
+            <td>Sorbonne University</td>
+            <td>France</td>
+            <td>Paris</td>
+            <td>1257</td>
+            <td>55,600</td>
+          </tr>
+          <tr>
+            <td class="rank-col">60</td>
+            <td>Hong Kong University of Science and Technology</td>
+            <td>Hong Kong</td>
+            <td>Clear Water Bay</td>
+            <td>1991</td>
+            <td>16,848</td>
+          </tr>
+          <tr>
+            <td class="rank-col">61</td>
+            <td>KU Leuven</td>
+            <td>Belgium</td>
+            <td>Leuven</td>
+            <td>1425</td>
+            <td>63,774</td>
+          </tr>
+          <tr>
+            <td class="rank-col">62</td>
+            <td>University of California, San Diego (UCSD)</td>
+            <td>USA</td>
+            <td>San Diego, CA</td>
+            <td>1960</td>
+            <td>42,875</td>
+          </tr>
+          <tr>
+            <td class="rank-col">63</td>
+            <td>University of Washington</td>
+            <td>USA</td>
+            <td>Seattle, WA</td>
+            <td>1861</td>
+            <td>59,782</td>
+          </tr>
+          <tr>
+            <td class="rank-col">64</td>
+            <td>University of Illinois at Urbana-Champaign</td>
+            <td>USA</td>
+            <td>Champaign, IL</td>
+            <td>1867</td>
+            <td>56,299</td>
+          </tr>
+          <tr>
+            <td class="rank-col">65</td>
+            <td>University of Warwick</td>
+            <td>UK</td>
+            <td>Coventry</td>
+            <td>1965</td>
+            <td>29,534</td>
+          </tr>
+          <tr>
+            <td class="rank-col">66</td>
+            <td>University of Auckland</td>
+            <td>New Zealand</td>
+            <td>Auckland</td>
+            <td>1883</td>
+            <td>42,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">67</td>
+            <td>National Taiwan University</td>
+            <td>Taiwan</td>
+            <td>Taipei</td>
+            <td>1928</td>
+            <td>32,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">68</td>
+            <td>City University of Hong Kong</td>
+            <td>Hong Kong</td>
+            <td>Kowloon</td>
+            <td>1984</td>
+            <td>19,697</td>
+          </tr>
+          <tr>
+            <td class="rank-col">69</td>
+            <td>Universiti Malaya (UM)</td>
+            <td>Malaysia</td>
+            <td>Kuala Lumpur</td>
+            <td>1905</td>
+            <td>26,898</td>
+          </tr>
+          <tr>
+            <td class="rank-col">70</td>
+            <td>University of Buenos Aires (UBA)</td>
+            <td>Argentina</td>
+            <td>Buenos Aires</td>
+            <td>1821</td>
+            <td>328,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">71</td>
+            <td>Yonsei University</td>
+            <td>South Korea</td>
+            <td>Seoul</td>
+            <td>1885</td>
+            <td>38,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">72</td>
+            <td>Korea University</td>
+            <td>South Korea</td>
+            <td>Seoul</td>
+            <td>1905</td>
+            <td>35,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">73</td>
+            <td>University of Zurich</td>
+            <td>Switzerland</td>
+            <td>Zurich</td>
+            <td>1833</td>
+            <td>28,121</td>
+          </tr>
+          <tr>
+            <td class="rank-col">74</td>
+            <td>Georgia Institute of Technology</td>
+            <td>USA</td>
+            <td>Atlanta, GA</td>
+            <td>1885</td>
+            <td>45,296</td>
+          </tr>
+          <tr>
+            <td class="rank-col">75</td>
+            <td>University of Glasgow</td>
+            <td>UK</td>
+            <td>Glasgow</td>
+            <td>1451</td>
+            <td>32,465</td>
+          </tr>
+          <tr>
+            <td class="rank-col">76</td>
+            <td>Osaka University</td>
+            <td>Japan</td>
+            <td>Osaka</td>
+            <td>1931</td>
+            <td>23,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">77</td>
+            <td>Trinity College Dublin</td>
+            <td>Ireland</td>
+            <td>Dublin</td>
+            <td>1592</td>
+            <td>18,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">78</td>
+            <td>University of Southampton</td>
+            <td>UK</td>
+            <td>Southampton</td>
+            <td>1862</td>
+            <td>23,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">79</td>
+            <td>Lomonosov Moscow State University</td>
+            <td>Russia</td>
+            <td>Moscow</td>
+            <td>1755</td>
+            <td>38,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">80</td>
+            <td>University of Copenhagen</td>
+            <td>Denmark</td>
+            <td>Copenhagen</td>
+            <td>1479</td>
+            <td>37,500</td>
+          </tr>
+          <tr>
+            <td class="rank-col">81</td>
+            <td>Pohang University of Science And Technology</td>
+            <td>South Korea</td>
+            <td>Pohang</td>
+            <td>1986</td>
+            <td>3,500</td>
+          </tr>
+          <tr>
+            <td class="rank-col">82</td>
+            <td>Heidelberg University</td>
+            <td>Germany</td>
+            <td>Heidelberg</td>
+            <td>1386</td>
+            <td>28,413</td>
+          </tr>
+          <tr>
+            <td class="rank-col">83</td>
+            <td>Lund University</td>
+            <td>Sweden</td>
+            <td>Lund</td>
+            <td>1666</td>
+            <td>40,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">84</td>
+            <td>Tohoku University</td>
+            <td>Japan</td>
+            <td>Sendai</td>
+            <td>1907</td>
+            <td>17,800</td>
+          </tr>
+          <tr>
+            <td class="rank-col">85</td>
+            <td>University of Birmingham</td>
+            <td>UK</td>
+            <td>Birmingham</td>
+            <td>1900</td>
+            <td>38,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">86</td>
+            <td>UNAM</td>
+            <td>Mexico</td>
+            <td>Mexico City</td>
+            <td>1910</td>
+            <td>360,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">87</td>
+            <td>University of São Paulo</td>
+            <td>Brazil</td>
+            <td>São Paulo</td>
+            <td>1934</td>
+            <td>97,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">88</td>
+            <td>KTH Royal Institute of Technology</td>
+            <td>Sweden</td>
+            <td>Stockholm</td>
+            <td>1827</td>
+            <td>13,500</td>
+          </tr>
+          <tr>
+            <td class="rank-col">89</td>
+            <td>University of Western Australia</td>
+            <td>Australia</td>
+            <td>Perth</td>
+            <td>1911</td>
+            <td>24,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">90</td>
+            <td>Boston University</td>
+            <td>USA</td>
+            <td>Boston, MA</td>
+            <td>1839</td>
+            <td>36,714</td>
+          </tr>
+          <tr>
+            <td class="rank-col">91</td>
+            <td>University of Leeds</td>
+            <td>UK</td>
+            <td>Leeds</td>
+            <td>1904</td>
+            <td>38,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">92</td>
+            <td>University of Nottingham</td>
+            <td>UK</td>
+            <td>Nottingham</td>
+            <td>1881</td>
+            <td>46,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">93</td>
+            <td>University of Sheffield</td>
+            <td>UK</td>
+            <td>Sheffield</td>
+            <td>1905</td>
+            <td>30,195</td>
+          </tr>
+          <tr>
+            <td class="rank-col">94</td>
+            <td>University of St Andrews</td>
+            <td>UK</td>
+            <td>St Andrews</td>
+            <td>1413</td>
+            <td>10,500</td>
+          </tr>
+          <tr>
+            <td class="rank-col">95</td>
+            <td>University of Oslo</td>
+            <td>Norway</td>
+            <td>Oslo</td>
+            <td>1811</td>
+            <td>27,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">96</td>
+            <td>Penn State University</td>
+            <td>USA</td>
+            <td>University Park, PA</td>
+            <td>1855</td>
+            <td>88,116</td>
+          </tr>
+          <tr>
+            <td class="rank-col">97</td>
+            <td>Sungkyunkwan University (SKKU)</td>
+            <td>South Korea</td>
+            <td>Suwon</td>
+            <td>1398</td>
+            <td>25,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">98</td>
+            <td>University of Science and Technology of China</td>
+            <td>China</td>
+            <td>Hefei</td>
+            <td>1958</td>
+            <td>16,000</td>
+          </tr>
+          <tr>
+            <td class="rank-col">99</td>
+            <td>Technical University of Berlin</td>
+            <td>Germany</td>
+            <td>Berlin</td>
+            <td>1879</td>
+            <td>33,500</td>
+          </tr>
+          <tr>
+            <td class="rank-col">100</td>
+            <td>Purdue University</td>
+            <td>USA</td>
+            <td>West Lafayette, IN</td>
+            <td>1869</td>
+            <td>50,884</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function filterTable() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("uniTable");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 0; i < tr.length; i++) {
+          // Search in Name, Country, or Founded Year
+          var tdName = tr[i].getElementsByTagName("td")[1];
+          var tdCountry = tr[i].getElementsByTagName("td")[2];
+          var tdFounded = tr[i].getElementsByTagName("td")[4];
+
+          if (tdName || tdCountry) {
+            var txtValueName = tdName.textContent || tdName.innerText;
+            var txtValueCountry = tdCountry.textContent || tdCountry.innerText;
+            var txtValueFounded = tdFounded
+              ? tdFounded.textContent || tdFounded.innerText
+              : "";
+
+            if (
+              txtValueName.toUpperCase().indexOf(filter) > -1 ||
+              txtValueCountry.toUpperCase().indexOf(filter) > -1 ||
+              txtValueFounded.indexOf(filter) > -1
+            ) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

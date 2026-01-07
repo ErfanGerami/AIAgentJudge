@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Judge System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: monospace; background: white; color: black; line-height: 1.4; }
+        .container { max-width: 800px; margin: 50px auto; padding: 20px; }
+        h1 { border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        input, select, textarea { border: 1px solid black; padding: 5px; font-family: monospace; }
+        button { border: 1px solid black; background: white; padding: 5px 10px; cursor: pointer; font-family: monospace; }
+        button:hover { background: #f0f0f0; }
+        .menu { margin: 20px 0; border: 1px solid black; padding: 10px; }
+        .menu a { margin-right: 15px; text-decoration: none; color: black; }
+        .menu a:hover { text-decoration: underline; }
+        .message { padding: 10px; margin: 10px 0; border: 1px solid black; }
+        .form-group { margin: 10px 0; }
+        .form-group label { display: block; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Judge System</h1>
+        
+        <div class="menu">
+                <a href="index.html">Problems</a> | 
+                <a href="submissions.html">My Submissions</a> | 
+                <a href="scoreboard.html">Scoreboard</a> | 
+                <a href="submit.html">Submit</a> | 
+                <a href="#" onclick="logout()">Logout</a>
+            </span>
+        </div>
+
+        <h2>Register</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required style="width: 300px;">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" style="width: 300px;">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required style="width: 300px;">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+
+    <script src="_config.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/register/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.style.display = 'block';
+                    messageDiv.innerHTML = 'Registration successful! <a href="login.html">Click here to login</a>';
+                    document.getElementById('registerForm').reset();
+                } else {
+                    messageDiv.style.display = 'block';
+                    messageDiv.textContent = data.username?.[0] || data.password?.[0] || 'Registration failed';
+                }
+            } catch (error) {
+                messageDiv.style.display = 'block';
+                messageDiv.textContent = 'Network error occurred';
+            }
+        });
+    </script>
+</body>
+</html>

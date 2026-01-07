@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Solution - Judge System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: monospace; background: white; color: black; line-height: 1.4; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        input, select, textarea { border: 1px solid black; padding: 5px; font-family: monospace; }
+        button { border: 1px solid black; background: white; padding: 5px 10px; cursor: pointer; font-family: monospace; }
+        button:hover { background: #f0f0f0; }
+        .menu { margin: 20px 0; border: 1px solid black; padding: 10px; }
+        .menu a { margin-right: 15px; text-decoration: none; color: black; }
+        .menu a:hover { text-decoration: underline; }
+        .user-info { float: right; }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .message { padding: 10px; margin: 10px 0; border: 1px solid black; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Judge System</h1>
+        
+        <div class="menu">
+                <a href="index.html">Problems</a> | 
+                <a href="submissions.html">My Submissions</a> | 
+                <a href="scoreboard.html">Scoreboard</a> | 
+                <a href="submit.html">Submit</a> | 
+                <a href="#" onclick="logout()">Logout</a>
+            </span>
+        </div>
+
+        <h2>Submit Solution</h2>
+        <div id="problemInfo"></div>
+        
+        <form id="submitForm">
+            <div class="form-group">
+                <label for="problem">Problem:</label>
+                <select id="problem" required>
+                    <option value="">Select a problem</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="file">Solution File:</label>
+                <input type="file" id="file" accept=".c,.cpp,.java,.py,.txt" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+
+    <script src="_config.js"></script>
+    <script>
+        checkAuth();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const problemId = urlParams.get('problem');
+
+        async function loadProblems() {
+            try {
+                const problems = await apiRequest('/user/problems/');
+                const select = document.getElementById('problem');
+                
+                problems.forEach(problem => {
+                    const option = document.createElement('option');
+                    option.value = problem.id;
+                    option.textContent = `${problem.number}. ${problem.title}`;
+                    if (problem.id == problemId) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                
+                if (problemId) {
+                    document.getElementById('problemInfo').textContent = `Submitting solution for problem ${problemId}`;
+                }
+            } catch (error) {
+                console.error('Error loading problems:', error);
+            }
+        }
+
+        document.getElementById('submitForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const problemId = document.getElementById('problem').value;
+            const fileInput = document.getElementById('file');
+            const messageDiv = document.getElementById('message');
+            
+            if (!fileInput.files.length) {
+                messageDiv.textContent = 'Please select a file';
+                messageDiv.style.display = 'block';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('problem', problemId);
+            
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE}/user/submissions/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    messageDiv.textContent = 'Submission successful!';
+                    messageDiv.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = 'submissions.html';
+                    }, 1000);
+                } else {
+                    const data = await response.json();
+                    messageDiv.textContent = data.detail || 'Submission failed';
+                    messageDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.log(error)
+                messageDiv.textContent = 'error occurred';
+                messageDiv.style.display = 'block';
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = 'login.html';
+        }
+
+        loadProblems();
+    </script>
+</body>
+</html>
