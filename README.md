@@ -83,6 +83,7 @@ AIAgentJudge is a comprehensive online judge platform designed to automate the e
    EOF
    ```
 
+
 3. **Build and start services**
    ```bash
    docker-compose up -d
@@ -91,7 +92,6 @@ AIAgentJudge is a comprehensive online judge platform designed to automate the e
 4. **Access the application**
    - Frontend: http://localhost
    - Backend API: http://localhost:8000
-   ```
 
 
 ### Judge Script Template
