@@ -97,4 +97,4 @@ AIAgentJudge is a comprehensive online judge platform designed to automate the e
 ### Judge Script Template
 
 See `Worker/template/judge.py` for the standard judge implementation.
-For costume judge implementation(for example interactive problems and ... ) just overload the functions in the class provided by BaseJudge and upload the script for the problem
+For custom judge implementation(for example interactive problems and ... ) just overload the functions in the class provided by BaseJudge and upload the script for the problem
